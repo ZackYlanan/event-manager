@@ -23,7 +23,7 @@ class Event extends Model
         'status',
     ];
 
-    protected $cast = [ // $cast automatically converts database values to specific PHP data types when retrieving them
+    protected $casts = [ // $cast automatically converts database values to specific PHP data types when retrieving them
         'event_date' => 'date',
         'registration_deadline' => 'date',
     ];
