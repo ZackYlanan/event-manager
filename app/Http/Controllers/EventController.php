@@ -14,5 +14,6 @@ class EventController extends Controller
                     ->get(); // fetch all published events 
 
         return response()->json($events);
+        //return view('events.index', compact('events')); -> for testing 
     }
 }
