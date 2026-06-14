@@ -12,22 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('registrations', function (Blueprint $table) {
-            $table->increments('id'); // INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY
-            
-            $table->unsignedInteger('event_id');
-            $table->foreign('event_id')->references('id')->on('events')->deleteCascade('cascade');
+            $table->id();
 
-            $table->string('full_name');
-            $table->string('student_id');
-            $table->string('email');
-            $table->string('course');
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
-            $table->string('registration_code')->unique();
-            $table->string('attendance_status')->default('pending'); // pending, present, absent
+            $table->string('registration_code', 20)->unique();
+            $table->enum('attendance_status', ['Pending', 'Present', 'Absent'])->default('Pending');
             $table->timestamp('checked_in_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['event_id', 'student_id']);
+            // this prevents the student for entering the same event twice
+            $table->unique(['event_id', 'user_id']);
         });
     }
 

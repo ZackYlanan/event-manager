@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('event_categories', function (Blueprint $table) {
-            $table->increments('id'); // INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY
-            $table->string('category');
-            $table->string('display_name');
-            // $table->string('description') remove as hindi naman na need explain yung category sa admin
+            $table->id();
+            $table->string('category', 100)->unique();
+            $table->string('display_name', 255);
             $table->timestamps();
         });
     }

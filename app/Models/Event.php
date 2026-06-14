@@ -10,7 +10,7 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'admin_id',
         'category_id',
         'title',
         'description',
@@ -18,26 +18,28 @@ class Event extends Model
         'event_date',
         'start_time',
         'end_time',
-        'max_slots',
+        'maximum_slots',
         'registration_deadline',
-        'status'
+        'status',
     ];
 
-    // an event belongs to one admin (user)
-    public function user()
+    protected $casts = [ // $cast automatically converts database values to specific PHP data types when retrieving them
+        'event_date' => 'date',
+        'registration_deadline' => 'date',
+    ];
+
+    public function admin()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'admin_id');
     }
 
-    // an event belongs to one category
     public function category()
     {
-        return $this->belongsTo(EventCategory::class);
+        return $this->belongsTo(EventCategory::class, 'category_id');
     }
 
-    // an event has many Registrations (attendees)
     public function registrations()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(Registration::class, 'event_id');
     }
 }

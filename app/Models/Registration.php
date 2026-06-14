@@ -11,19 +11,23 @@ class Registration extends Model
 
     protected $fillable = [
         'event_id',
-        'full_name',
-        'student_id',
-        'email',
-        'course',
+        'user_id',
         'registration_code',
         'attendance_status',
-        'checked_in_at'
+        'checked_in_at',
     ];
 
-    // an registration belongs to one event
+    protected $cast = [
+        'checked_in_at' => 'datetime'
+    ];
 
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
