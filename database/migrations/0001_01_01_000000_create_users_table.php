@@ -17,6 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // Our custom RBAC columns
+            $table->enum('role', ['admin', 'student'])->default('student');
+            $table->string('student_id', 50)->nullable();
+            $table->string('course', 100)->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
