@@ -13,18 +13,17 @@ return new class extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events')->onDelete('cascasde');
 
-            $table->string('full_name');
-            $table->string('student_id')->nullable();
-            $table->string('email');
-            $table->string('course')->nullable();
-            $table->string('registration_code')->unique();
-            $table->string('attendence_status')->default('pending');//pending, checked-in
-            $table->datetime('checkin_at')->nullable();
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
-            $table->timestamps(); 
+            $table->string('registration_code', 20)->unique();
+            $table->enum('attendance_status', ['Pending', 'Present', 'Absent'])->default('Pending');
+            $table->timestamp('checked_in_at')->nullable();
+            $table->timestamps();
 
+            // this prevents the student for entering the same event twice
+            $table->unique(['event_id', 'user_id']);
         });
     }
 

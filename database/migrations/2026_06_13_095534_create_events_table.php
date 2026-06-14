@@ -12,21 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id(); //Primary key
-            $table->foreignId('user_id')->constrained('user')->onDelete('cascade');
-            $table->foreignId('category_id')->constained('event_catergories')->onDelete('cascade');
-            
-            $table->string('title');
-            $table->string('category');
-            $table->text('description')->nullable();
-            $table->string('venue');
+            $table->id();
+
+            $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('event_categories')->onDelete('restrict');
+
+            // Event details
+            $table->string('title', 255);
+            $table->text('description');
+            $table->string('venue', 255)->default('TBA');
             $table->date('event_date');
             $table->time('start_time');
             $table->time('end_time');
-            $table->int('max_slots')->nullable;
-            $table->datetime('registration_dealine')->nullable();
-            $table->string('status')->default('upcoming');// upcoming, completed, cancelled
-            $table->timestamps();//created_at and updated_at
+            $table->integer('maximum_slots');
+            $table->date('registration_deadline');
+
+            // enunm instead of string
+            $table->enum('status', ['Draft', 'Published', 'Cancelled', 'Completed'])->default('Draft');
+
+            $table->timestamps();
         });
     }
 
