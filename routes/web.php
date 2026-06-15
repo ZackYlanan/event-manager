@@ -35,5 +35,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-
-Route::get('/events', [EventController::class, 'index'])->name('events.index');
