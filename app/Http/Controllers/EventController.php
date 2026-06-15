@@ -48,4 +48,15 @@ class EventController extends Controller
         // Send the user back to the dashboard with a success message
         return redirect()->route('events.index')->with('success', 'Event created successfully!');
     }
+
+    public function publicDirectory()
+    {
+        // get all events that is published and have not happened
+        $events = Event::where('status', 'Published')
+            ->where('event_date', '>=', now())
+            ->orderBy('event_date', 'asc')
+            ->get();
+
+        return view('student.directory', compact('events'));
+    }
 }

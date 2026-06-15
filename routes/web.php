@@ -19,13 +19,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // --- ADMIN ROUTES: Managing Events ---
-    Route::get('/admin/events', [EventController::class, 'index'])->name('events.index');
-    Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
-    Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/events', [EventController::class, 'index'])->name('events.index');
+        Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
+        Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+    });
+
 
     // --- STUDENT ROUTES: Registering for Events ---
-    Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
-    Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
+    Route::middleware('role:student')->group(function () {
+        Route::get('/events', [EventController::class, 'publicDirectory'])->name('events.directory');
+        Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
+        Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
+    });
 });
 
 require __DIR__ . '/auth.php';
