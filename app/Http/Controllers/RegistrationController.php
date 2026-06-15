@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
-{  
+{
     public function myTickets()
     {
         $registrations = Registration::with('event')->where('user_id', Auth::id())->get();
@@ -23,7 +23,7 @@ class RegistrationController extends Controller
         $user = Auth::user();
 
         //restrict to student only 
-         if ($user->role !== 'student') {
+        if ($user->role !== 'student') {
             return redirect()->back()->with('error', 'Only students can register for events.');
         }
 
