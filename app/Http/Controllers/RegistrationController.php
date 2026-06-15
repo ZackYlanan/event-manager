@@ -20,10 +20,16 @@ class RegistrationController extends Controller
     public function store(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
-        $userId = Auth::id();
+        $user = Auth::user();
 
+        //restrict to student only 
+        if ($user->role !== 'student') {
+            return redirect()->back()->with('error', 'Only students can register for events.');
+        }
+
+        //prevents duplicate
         $alreadyRegistered = Registration::where('event_id', $eventId)
-            ->where('user_id', $userId)
+            ->where('user_id', $user->id)
             ->exists();
 
         // checks if the student is already registered
@@ -40,7 +46,7 @@ class RegistrationController extends Controller
         // Create the registration ticket with a random 8-character unique code
         Registration::create([
             'event_id' => $event->id,
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'registration_code' => strtoupper(Str::random(8)),
             'attendance_status' => 'Pending',
         ]);
