@@ -59,4 +59,18 @@ class EventController extends Controller
 
         return view('student.directory', compact('events'));
     }
+
+    //delete an event for admin only
+    public function destroy($id){
+        $events = Event::findOrFail($id);
+
+        //restrict for admin only
+        if (auth()->user()->role != 'admin') {
+            return redirect()->back()->with('error','Only Admins can delete events.');
+        }
+
+        $events->delete();
+
+        return redirect()->route('events.index')->with('success','Event deleted successfully!');
+    }
 }

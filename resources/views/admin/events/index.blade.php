@@ -28,12 +28,25 @@
                             <li class="py-4 flex justify-between items-center">
                                 <div>
                                     <h3 class="text-lg font-bold">{{ $event->title }}</h3>
-                                    <p class="text-sm text-gray-600">{{ $event->event_date->format('M d, Y') }} |
-                                        {{ $event->venue }}</p>
+                                    <p class="text-sm text-gray-600">
+                                        {{ $event->event_date->format('M d, Y') }} | {{ $event->venue }}
+                                    </p>
                                 </div>
-                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                    {{ $event->status }}
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                        {{ $event->status }}
+                                    </span>
+
+                                    <!-- Delete button -->
+                                    <form action="{{ route('events.destroy', $event->id) }}" method="POST"
+                                          onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         @endforeach
                     </ul>
