@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/events', [EventController::class, 'index'])->name('events.index');
         Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+
+        Route::get('/admin/checkin', [RegistrationController::class, 'showCheckInForm'])->name('admin.checkin');
+
+        Route::post('/admin/checkin', [RegistrationController::class, 'processCheckIn'])->name('admin.checkin.process');
     });
 
 
