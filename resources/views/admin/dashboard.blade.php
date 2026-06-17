@@ -8,7 +8,7 @@
                     <p class="text-black font-mono mt-2">System Overview & Analytics</p>
                 </div>
                 <a href="{{ route('events.create') }}"
-                    class="px-6 py-2 border-2 border-black bg-black text-white font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
+                    class="px-6 py-2 border-2 border-black bg-black text-black font-bold uppercase tracking-widest hover:bg-white hover:text-gray-800 transition-colors">
                     + New Event
                 </a>
             </div>
