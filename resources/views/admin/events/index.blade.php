@@ -1,14 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class=" ">
-                {{ __('My Managed Events') }}
-            </h2>
-            <a href="{{ route('events.create') }}" class="">
-                + Create New Event
-            </a>
-        </div>
-    </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

@@ -1,9 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="">
-            {{ __('Create New Event') }}
-        </h2>
-    </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -12,8 +7,7 @@
                 <form method="POST" action="{{ route('events.store') }}">
                     @csrf <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2">Event Title</label>
-                        <input type="text" name="title" class="w-full rounded-md border-gray-300 shadow-sm"
-                            required>
+                        <input type="text" name="title" class="w-full rounded-md border-gray-300 shadow-sm" required>
                     </div>
 
                     <div class="mb-4">
