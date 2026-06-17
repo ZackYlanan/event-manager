@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -40,10 +41,12 @@ class EventController extends Controller
         ]);
 
         $validatedData['admin_id'] = Auth::id(); //add the id of admin that created this event
-        $validateData['status'] = 'Published'; //default on published for now
+        $validatedData['status'] = 'Published'; //default on published for now
 
         // Create the event in the database using the Model
         Event::create($validatedData);
+
+        Log::info('Event created successfully with data:', $validatedData);
 
         // Send the user back to the dashboard with a success message
         return redirect()->route('events.index')->with('success', 'Event created successfully!');
@@ -60,17 +63,46 @@ class EventController extends Controller
         return view('student.directory', compact('events'));
     }
 
-    //delete an event for admin only
-    public function destroy($id){
-        $events = Event::findOrFail($id);
+    public function edit($id)
+    {
+        $event = Event::findOrFail($id);
+        return view('admin.events.edit', compact('event'));
+    }
 
-        //restrict for admin only
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'venue' => 'nullable|string|max:255',
+            'event_date' => 'required|date',
+            'maximum_slots' => 'required|integer|min:1',
+        ]);
+
+        $event = Event::findOrFail($id);
+
+        $event->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'venue' => $request->venue,
+            'event_date' => $request->event_date,
+            'maximum_slots' => $request->maximum_slots,
+        ]);
+
+        return redirect()->route('events.index')->with('success', 'Event updated successfully!');
+    }
+
+    public function destroy($id) // delete function in event
+    {
+        $event = Event::findOrFail($id);
+
+        /* //restrict for admin only
         if (auth()->user()->role != 'admin') {
-            return redirect()->back()->with('error','Only Admins can delete events.');
+            return redirect()->back()->with('error', 'Only Admins can delete events.');
         }
+ */
+        $event->delete();
 
-        $events->delete();
-
-        return redirect()->route('events.index')->with('success','Event deleted successfully!');
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
     }
 }
