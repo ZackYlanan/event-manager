@@ -32,20 +32,32 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+
+            // this is unique to ensure that no two student has same student id
+            'student_id' => ['required', 'string', 'max:50', 'unique:users,student_id'],
+
+            // added this course_id so we can group the students based on their course someday
+            'course' => ['required', 'string', 'max:100'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+
+            // the custom form fields
+            'student_id' => $request->student_id,
+            'course' => $request->course,
+
+            'role' => 'student', //set student as default role so it will stop public from accessing admin page
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('events.directory');
     }
 }

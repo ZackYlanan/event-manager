@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
@@ -10,7 +11,17 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // If the user is an admin, send them to the new analytics dashboard
+    if (auth()->user()->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    // If the user is a student, skip the dashboard and send them straight to the events list
+    if (auth()->user()->role === 'student') {
+        return redirect()->route('events.directory');
+    }
+
+    return view('dashboard'); // just in case
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -23,6 +34,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/events', [EventController::class, 'index'])->name('events.index');
         Route::get('/admin/events/create', [EventController::class, 'create'])->name('events.create');
         Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
+
+        Route::get('/admin/checkin', [RegistrationController::class, 'showCheckInForm'])->name('admin.checkin'); // check in page
+
+        Route::post('/admin/checkin', [RegistrationController::class, 'processCheckIn'])->name('admin.checkin.process'); // process check in
+
+        Route::get('/admin/events/{id}/edit', [EventController::class, 'edit'])->name('events.edit');
+        Route::put('/admin/events/{id}', [EventController::class, 'update'])->name('events.update');
+
+        Route::delete('/admin/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // delete event
+
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard'); // route for admin dashboard
     });
 
 
