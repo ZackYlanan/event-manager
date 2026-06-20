@@ -58,4 +58,15 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/events', [EventController::class, 'index'])->name('events.index');
+// --- FRONTEND SANDBOX ---
+// Allows frontend developers to test views without affecting the main app routes.
+// To use, create a blade file in resources/views/sandbox/ and navigate to /sandbox/filename
+Route::get('/sandbox/{view?}', function ($view = 'index') {
+    $viewPath = 'sandbox.' . str_replace('/', '.', $view);
+
+    if (view()->exists($viewPath)) {
+        return view($viewPath);
+    }
+
+    abort(404, "Sandbox view [resources/views/sandbox/{$view}.blade.php] not found.");
+})->where('view', '.*');
