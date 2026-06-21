@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // delete event
 
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard'); // route for admin dashboard
+
+        Route::get('admin/events/{id}/report/data', [EventReportController::class, 'getReportData'])->name('events.report.data');
+        Route::get('admin/events/{id}/report/export', [EventReportController::class, 'exportCsv'])->name('events.report.export');
     });
 
 
