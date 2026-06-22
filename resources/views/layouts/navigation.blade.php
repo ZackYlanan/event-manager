@@ -14,21 +14,21 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @if (Auth::user()->role === 'admin')
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                            {{ __('Admin Dashboard') }}
+                            {{ __('Home') }}
                         </x-nav-link>
                     @endif
 
 
                     @if (Auth::user()->role === 'admin')
                         <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
-                            🛡️ Manage Events
+                            {{ __('Events') }}
                         </x-nav-link>
                         <x-nav-link :href="route('events.create')" :active="request()->routeIs('events.create')">
-                            + Create Event
+                            {{ __('Create Event') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('admin.checkin')" :active="request()->routeIs('admin.checkin')">
-                            🎟️ Event Check-In
+                            {{ __('Check-In') }}
                         </x-nav-link>
                     @endif
 
