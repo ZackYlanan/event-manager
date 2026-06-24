@@ -37,8 +37,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/events', [EventController::class, 'store'])->name('events.store');
 
         Route::get('/admin/checkin', [RegistrationController::class, 'showCheckInForm'])->name('admin.checkin'); // check in page
-
         Route::post('/admin/checkin', [RegistrationController::class, 'processCheckIn'])->name('admin.checkin.process'); // process check in
+        Route::post('/admin/checkin/{id}/manual', [RegistrationController::class, 'manualCheckIn'])->name('admin.checkin.manual'); // manual fallback when they forgot their ticket
 
         Route::get('/admin/events/{id}/edit', [EventController::class, 'edit'])->name('events.edit');
         Route::put('/admin/events/{id}', [EventController::class, 'update'])->name('events.update');
@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard'); // route for admin dashboard
 
+        Route::get('admin/events/{id}/report', [EventReportController::class, 'showReport'])->name('events.report.show');
         Route::get('admin/events/{id}/report/data', [EventReportController::class, 'getReportData'])->name('events.report.data');
         Route::get('admin/events/{id}/report/export', [EventReportController::class, 'exportCsv'])->name('events.report.export');
     });
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/events', [EventController::class, 'publicDirectory'])->name('events.directory');
         Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
         Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
+        Route::get('events/{id}/show', [EventController::class, 'show'])->name('events.show');
     });
 });
 
