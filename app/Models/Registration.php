@@ -17,7 +17,7 @@ class Registration extends Model
         'checked_in_at',
     ];
 
-    protected $cast = [
+    protected $casts = [
         'checked_in_at' => 'datetime'
     ];
 
