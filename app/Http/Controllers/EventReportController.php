@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class EventReportController extends Controller
 {
+    public function showReport($id)
+    {
+        $event = Event::findOrFail($id);
+        return view('admin.report', compact('event'));
+    }
+
     public function getReportData($id): JsonResponse
 
     {
@@ -19,7 +25,8 @@ class EventReportController extends Controller
         $checkedIn = $event->registrations->where('attendance_status', 'Present')->count();
         $noShows = $totalRegistrations - $checkedIn; //absents
 
-        $capacityUtilization = $maxCapacity > 0 ? round(($checkedIn / $maxCapacity) * 100, 2) : 0;
+        /* $capacityUtilization = $maxCapacity > 0 ? round(($checkedIn / $maxCapacity) * 100, 2) : 0; */
+        $capacityUtilization = $maxCapacity > 0 ? round(($totalRegistrations / $maxCapacity) * 100, 2) : 0;
         $turnoutRate = $totalRegistrations > 0 ? round(($checkedIn / $totalRegistrations) * 100, 2) : 0;
 
         $roster = $event->registrations->map(function ($registration) {
