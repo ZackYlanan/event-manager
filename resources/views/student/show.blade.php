@@ -36,7 +36,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        {{ \Carbon\Carbon::parse($event->event_date)->format('h:i A') }}
+                        {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
                     </div>
 
                     <div class="flex items-center text-[#FF7A00]">
@@ -95,16 +95,42 @@
                         <p class="text-3xl font-black text-[#FF7A00]">FREE</p>
                     </div>
 
-                    @if ($event->registrations_count >= $event->maximum_slots)
+                    @php
+                        $isRegistered =
+                            auth()->check() && auth()->user()->registrations()->where('event_id', $event->id)->exists();
+                        $isFull = $event->registrations_count >= $event->maximum_slots;
+                        $isClosed =
+                            $event->status !== 'Published' ||
+                            \Carbon\Carbon::parse($event->registration_deadline)->endOfDay()->isPast() ||
+                            \Carbon\Carbon::parse($event->event_date)->endOfDay()->isPast();
+                    @endphp
+
+                    @if ($isRegistered)
+                        <div
+                            class="w-full bg-[#FFE8D6] border border-orange-200 text-orange-800 py-3 px-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+                            <span class="flex items-center font-bold">
+                                You Have a Ticket
+                            </span>
+                            <a href="{{ route('tickets.index') }}"
+                                class="text-xs font-semibold text-orange-600 mt-1 hover:text-[#FF7A00] transition-colors underline">
+                                View in My Tickets
+                            </a>
+                        </div>
+                    @elseif ($isFull || $isClosed)
                         <button disabled
-                            class="w-full bg-gray-300 text-gray-500 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed">
-                            Event is Full
+                            class="w-full bg-gray-50 border border-gray-200 text-gray-400 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                </path>
+                            </svg>
+                            {{ $isFull ? 'Event is Full' : 'Registration Closed' }}
                         </button>
                     @else
                         <form method="POST" action="{{ route('events.register', $event->id) }}">
                             @csrf
                             <button type="submit"
-                                class="w-full bg-[#FF7A00] hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                class="w-full bg-[#FF7A00] hover:bg-orange-600 text-white font-black uppercase tracking-wider py-3.5 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center group">
                                 Register now
                             </button>
                         </form>

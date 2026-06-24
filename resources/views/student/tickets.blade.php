@@ -41,7 +41,7 @@
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                             </path>
                                         </svg>
-                                        {{ \Carbon\Carbon::parse($registration->event->event_date)->format('M d, Y · h:i A') }}
+                                        {{ \Carbon\Carbon::parse($registration->event->event_date)->format('M d, Y') }} · {{ \Carbon\Carbon::parse($registration->event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($registration->event->end_time)->format('h:i A') }}
                                     </div>
                                     <div class="flex items-center text-sm font-medium text-gray-500">
                                         <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
 
-                                <a href="#"
+                                <a href=" {{ route('events.show', $registration->event->id) }} "
                                     class="inline-flex items-center px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors">
                                     View event
                                 </a>
