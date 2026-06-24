@@ -12,7 +12,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('admin_id', Auth::id())->get();
+        $events = Event::withCount('registrations')->where('admin_id', Auth::id())->get();
 
         return view('admin.events.index', compact('events')); // we will create this view later
 
@@ -57,7 +57,8 @@ class EventController extends Controller
     public function publicDirectory(Request $request)
     {
         // get all events that is published and have not happened
-        $query = Event::where('status', 'Published')
+        $query = Event::withCount('registrations')
+            ->where('status', 'Published')
             /*  ->where('event_date', '>=', now()) */
             ->whereDate('event_date', '>=', today())
             ->orderBy('event_date', 'asc');
