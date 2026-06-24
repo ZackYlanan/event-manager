@@ -54,9 +54,30 @@ class RegistrationController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Successfully registered for the event!');
     }
 
-    public function showCheckInForm()
+    public function showCheckInForm(Request $request)
     {
-        return view('admin.checkin');
+        /* $activeEvents = Event::whereDate('event_date', today()) // only fetch the events happening today
+            ->where('status', 'Published')
+            ->orderBy('event_date', 'asc')
+            ->get(); */
+
+        $activeEvents = Event::whereBetween('event_date', [now(), now()->addDays(3)])
+            ->where('status', 'Published')
+            ->orderBy('event_date', 'asc')
+            ->get();
+
+        $selectedEvent = null;
+        $registrations = collect();
+
+        if ($request->has('event_id')) {
+            $selectedEvent = Event::findOrFail($request->event_id);
+
+            $registrations = Registration::with('user', 'event')
+                ->where('event_id', $selectedEvent->id)
+                ->get();
+        }
+
+        return view('admin.checkin', compact('activeEvents', 'selectedEvent', 'registrations'));
     }
 
     public function processCheckIn(Request $request)
@@ -67,7 +88,10 @@ class RegistrationController extends Controller
         ]);
 
         // this search the matching ticket from the submit registration code
-        $registration = Registration::where('registration_code', $request->registration_code)->first();
+        // strtoupper just in case the scanner submits lowercase letters
+        $registration = Registration::where('registration_code', strtoupper($request->registration_code))
+            ->where('event_id', $request->event_id)
+            ->first();
 
         // checks if the registration code / ticket doesnt exist in our records
         if (!$registration) {
@@ -89,5 +113,20 @@ class RegistrationController extends Controller
         $eventTitle = $registration->event->title;
 
         return redirect()->back()->with('success', "Successfully checked in {$studentName} for the event: \"{$eventTitle}\"!");
+    }
+
+    public function manualCheckIn(Request $request, $id)
+    {
+        $registration = Registration::findOrFail($id);
+
+        if ($registration->attendance_status === "Present") {
+            return redirect()->back()->with('error', "Student already checked in!");
+        }
+
+        $registration->attendance_status = "Present";
+        $registration->checked_in_at = now();
+        $registration->save();
+
+        return redirect()->back()->with('success', "Manually checked in {$registration->user->name}!");
     }
 }
