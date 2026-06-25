@@ -17,7 +17,7 @@ class StudentsSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'student',
                 'student_id' => "2026-{$i}",
-                'course' => "Course $i",
+                'course' => "BSCS",
             ]);
         }
     }
