@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
         Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
         Route::get('events/{id}/show', [EventController::class, 'show'])->name('events.show');
+        Route::delete('/tickets{id}/cancel', [EventController::class,'cancel'])->name('ticket.cancel');
     });
 });
 

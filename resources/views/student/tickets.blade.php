@@ -60,6 +60,19 @@
                                     class="inline-flex items-center px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors">
                                     View event
                                 </a>
+                                
+                                {{-- Cancel Ticket button (only if not Present) --}}
+                                @if($registration->attendance_status !== 'Present')
+                                    <form action="{{ route('tickets.cancel', $registration->id) }}" method="POST" class="inline-block ml-2">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                onclick="return confirm('Are you sure you want to cancel this ticket?');"
+                                                class="inline-flex items-center px-5 py-2 border border-red-200 rounded-full text-xs font-bold text-red-700 bg-white hover:bg-red-50 hover:border-red-300 transition-colors">
+                                            Cancel Ticket
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
 
                             <div

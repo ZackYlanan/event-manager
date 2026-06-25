@@ -12,7 +12,19 @@ class RegistrationController extends Controller
 {
     public function myTickets()
     {
-        $registrations = Registration::with('event')->where('user_id', Auth::id())->get();
+        $registrations = Registration::with('event')
+            ->where('user_id', Auth::id())
+            ->orderByRaw("
+                CASE 
+                    WHEN attendance_status = 'Pending' THEN 0
+                    WHEN attendance_status = 'Present' THEN 2
+                    ELSE 1
+                END
+            ")
+            ->join('events', 'registrations.event_id', '=', 'events.id')
+            ->orderBy('events.event_date', 'asc')
+            ->select('registrations.*') // keep only registration fields
+            ->get();
 
         return view('student.tickets', compact('registrations'));
     }
@@ -53,6 +65,25 @@ class RegistrationController extends Controller
 
         return redirect()->route('tickets.index')->with('success', 'Successfully registered for the event!');
     }
+
+    public function cancel($id)
+    {
+        $registration = Registration::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $event = $registration->event;
+
+        // only allow cancel before registration_deadline
+        if (now()->greaterThan($event->registration_deadline)) {
+            return redirect()->back()->with('error', 'Cancellation period has ended.');
+        }
+
+        $registration->delete();
+
+        return redirect()->route('tickets.index')->with('success', 'Your ticket has been cancelled.');
+    }
+
 
     public function showCheckInForm(Request $request)
     {
@@ -129,4 +160,8 @@ class RegistrationController extends Controller
 
         return redirect()->back()->with('success', "Manually checked in {$registration->user->name}!");
     }
+
+    //sorting logic
+
+
 }
