@@ -1,64 +1,75 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <x-slot name="header">
+        <h1 class="text-lg font-extrabold tracking-tight text-gray-900 uppercase">Register Account</h1>
+        <p class="text-[11px] text-gray-500 mt-1">Please fill up the details to create an account.</p>
+    </x-slot>
+
+    <form method="POST" action="{{ route('register') }}" class="space-y-3.5">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required
-                autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="name" class="block text-[11px] font-semibold text-gray-700">Name</label>
+            <input id="name" type="text" name="name" value="{{ old('name') }}"
+                placeholder="Apolinario Mabini" required autofocus autocomplete="name"
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400" />
+            <x-input-error :messages="$errors->get('name')" class="mt-1" />
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
-                required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="email" class="block text-[11px] font-semibold text-gray-700">Email</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}"
+                placeholder="mabini@iskolarngbayan.pup.edu.ph" required autocomplete="username"
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400" />
+            <x-input-error :messages="$errors->get('email')" class="mt-1" />
         </div>
 
-        <!-- Student id -->
-        <div class="mt-4">
-            <x-input-label for="student_id" :value="__('Student Id')" />
-            <x-text-input id="student_id" class="block mt-1 w-full" type="text" name="student_id" :value="old('student_id')"
-                required />
-            <x-input-error :messages="$errors->get('student_id')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="student_id" class="block text-[11px] font-semibold text-gray-700">Student ID</label>
+            <input id="student_id" type="text" name="student_id" value="{{ old('student_id') }}"
+                placeholder="2024-X"required
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" />
+            <x-input-error :messages="$errors->get('student_id')" class="mt-1" />
         </div>
 
-        <!-- Course -->
-        <div class="mt-4">
-            <x-input-label for="course" :value="__('Course')" />
-            <x-text-input id="course" class="block mt-1 w-full" type="text" name="course" :value="old('course')"
-                required />
-            <x-input-error :messages="$errors->get('course')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="course" class="block text-[11px] font-semibold text-gray-700">Course</label>
+            <input id="course" type="text" name="course" value="{{ old('course') }}" placeholder="BSCS"required
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" />
+            <x-input-error :messages="$errors->get('course')" class="mt-1" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="password" class="block text-[11px] font-semibold text-gray-700">Password</label>
+            <input id="password" type="password" name="password" placeholder="At least 8 characters" required
+                autocomplete="new-password"
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" />
+            <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                name="password_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="space-y-1">
+            <label for="password_confirmation" class="block text-[11px] font-semibold text-gray-700">Confirm
+                Password</label>
+            <input id="password_confirmation" type="password" name="password_confirmation"
+                placeholder="Re-type your password" required autocomplete="new-password"
+                class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all" />
+            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        <button type="submit"
+            class="w-full mt-2 py-2.5 px-4 bg-[#FF7A00] hover:bg-orange-600 text-white font-bold text-xs rounded-full shadow-md transition-all uppercase tracking-wide cursor-pointer">
+            Submit
+        </button>
     </form>
+
+    <div class="flex items-center justify-between mt-6 px-1">
+        <a href="{{ route('login') }}"
+            class="text-[11px] font-semibold text-orange-500 hover:text-orange-600 transition-colors">
+            Already Registered?
+        </a>
+
+        <a href="{{ url()->previous() }}"
+            class="text-[11px] font-medium text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1">
+            &larr; Back
+        </a>
+    </div>
 </x-guest-layout>

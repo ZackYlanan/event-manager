@@ -17,6 +17,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    // Assignable attributes for the User model (including custom RBAC and registration fields)
     protected $fillable = [
         'name',
         'email',
