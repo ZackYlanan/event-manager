@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-orange-50/60 sticky top-0 z-10 shadow-sm">
+<nav x-data="{ open: false }" class="bg-white border-b border-orange-50/60 sticky top-0 z-50 shadow-sm">
     <div class="px-4 md:px-8 py-4 flex items-center justify-between w-full">
         <!-- Logo -->
         <div class="flex items-center gap-2.5">
