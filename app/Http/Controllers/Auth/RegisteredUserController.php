@@ -58,6 +58,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('events.directory');
+        return redirect()->intended(route('events.directory', absolute: false));
     }
 }

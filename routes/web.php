@@ -7,10 +7,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
-// Show the welcome splash screen
-Route::get('/', function () {
-    return view('welcome');
-});
+// --- public routes (No Auth Required) ---
+
+// Show the student home page as the public landing page
+Route::get('/', [EventController::class, 'studentHome'])->name('student.home');
+
+// Show the detailed information page for a specific event (public)
+Route::get('/events/{id}/show', [EventController::class, 'show'])->name('events.show');
 
 // Redirect users to their respective dashboards based on their role
 Route::get('/dashboard', function () {
@@ -25,6 +28,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// --- AUTHENTICATED ROUTES ---
 Route::middleware('auth')->group(function () {
     // Show the user profile editing form
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -75,34 +79,29 @@ Route::middleware('auth')->group(function () {
         Route::get('/events/{id}/report/export', [EventReportController::class, 'exportCsv'])->name('events.report.export');
     });
 
-
     // --- STUDENT ROUTES: Registering for Events ---
     Route::middleware('role:student')->prefix('student')->group(function () {
-        // Show the student's personalized home page
-        Route::get('/home', [EventController::class, 'studentHome'])->name('student.home');
-
         // Show the public directory of all upcoming events
         Route::get('/events', [EventController::class, 'publicDirectory'])->name('events.directory');
 
         // Show the student's registered tickets
         Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
 
-        // Register a student for a specific event
+        // Register a student for a specific event (protected — forces login)
         Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
-
-        // Show the detailed information page for a specific event
-        Route::get('/events/{id}/show', [EventController::class, 'show'])->name('events.show');
 
         // Cancel a student's pending ticket
         Route::delete('/tickets/{id}/cancel', [RegistrationController::class, 'cancelTicket'])->name('tickets.cancel');
     });
 });
 
+// Catch-all for unknown routes
 Route::fallback(function () {
     abort(404);
 });
 
 require __DIR__ . '/auth.php';
+
 // --- FRONTEND SANDBOX ---
 // Allows frontend developers to test views without affecting the main app routes.
 // To use, create a blade file in resources/views/sandbox/ and navigate to /sandbox/filename
