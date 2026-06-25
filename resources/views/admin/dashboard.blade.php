@@ -73,8 +73,7 @@
                 <div
                     class="bg-white rounded-[20px] p-6 border border-orange-50 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
-                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Ticket
-                            Issued</span>
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Tickets</span>
                         <div class="p-2 bg-orange-100 text-orange-500 rounded-lg"><svg class="w-4 h-4" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -89,7 +88,8 @@
             </div>
 
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-bold text-gray-900">Next {{ $recentEvents->count() }} {{ $recentEvents->count() === 1 ? 'Event' : 'Events' }}</h2>
+                <h2 class="text-lg font-bold text-gray-900">Next {{ $recentEvents->count() }}
+                    {{ $recentEvents->count() === 1 ? 'Event' : 'Events' }}</h2>
                 <a href="{{ route('events.index') }}"
                     class="text-sm font-semibold text-orange-500 hover:text-orange-600 flex items-center gap-1">
                     See all <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,15 +114,19 @@
                                             class="bg-[#FFE8D6] text-orange-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide">Upcoming</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">
-                                        {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }} · {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
+                                        {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }} ·
+                                        {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} -
+                                        {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
                                 </div>
                                 <div class="mt-3">
                                     <div class="flex justify-between text-[10px] font-semibold text-gray-500 mb-1.5">
                                         <span>Slots Capacity</span>
-                                        <span class="text-gray-900">{{ $event->registrations_count ?? 0 }}/{{ $event->maximum_slots }}</span>
+                                        <span
+                                            class="text-gray-900">{{ $event->registrations_count ?? 0 }}/{{ $event->maximum_slots }}</span>
                                     </div>
                                     <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-[#FF7A00] rounded-full" style="width: {{ $event->maximum_slots > 0 ? min(100, round((($event->registrations_count ?? 0) / $event->maximum_slots) * 100)) : 0 }}%;">
+                                        <div class="h-full bg-[#FF7A00] rounded-full"
+                                            style="width: {{ $event->maximum_slots > 0 ? min(100, round((($event->registrations_count ?? 0) / $event->maximum_slots) * 100)) : 0 }}%;">
                                         </div>
                                     </div>
                                 </div>

@@ -12,27 +12,33 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->id(); // Generates a BIGINT UNSIGNED primary key. This prevents future database
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique(); // we use unique constraint to guarantee no two accounts share an email login.
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
             // Our custom RBAC columns
-            $table->enum('role', ['admin', 'student'])->default('student');
-            $table->string('student_id', 50)->nullable();
+            // Defaulting to 'student' ensures public registration submissions and cannot maliciously pass an 'admin' parameter to escalate privileges.
+            $table->enum('role', ['admin', 'student'])->default('student'); // We use an ENUM here instead of a separate 'roles' table to keep our MVP
+
+            // These fields are strictly NULLABLE because 'admin' users (university staff/organizers)
+            // do not have academic identifiers or degree tracks.
+            $table->string('student_id', 50)->nullable(); // 
             $table->string('course', 100)->nullable();
 
             $table->rememberToken();
             $table->timestamps();
         });
 
+        // Native Laravel table required to manage stateless password recovery securely.
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
+        // Native Laravel database session driver table.
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
