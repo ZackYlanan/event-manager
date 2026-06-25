@@ -20,4 +20,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*'),
         );
+        
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+            
+            $message = str_contains($request->url(), 'register') 
+                ? 'Please log in or create an account to claim your ticket.' 
+                : 'Please log in to access this page.';
+                
+            return redirect()->guest(route('login'))->with('error', $message);
+        });
     })->create();
