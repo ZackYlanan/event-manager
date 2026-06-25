@@ -17,15 +17,15 @@
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+        <div class="space-y-1">
+            <label for="name" class="block text-[11px] font-semibold text-gray-700">{{ __('Name') }}</label>
+            <input id="name" name="name" type="text" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+        <div class="space-y-1">
+            <label for="email" class="block text-[11px] font-semibold text-gray-700">{{ __('Email') }}</label>
+            <input id="email" name="email" type="email" class="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-400" value="{{ old('email', $user->email) }}" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <button type="submit" class="py-2.5 px-4 bg-[#FF7A00] hover:bg-orange-600 text-white font-bold text-xs rounded-full shadow-md transition-all uppercase tracking-wide cursor-pointer">{{ __('Save') }}</button>
 
             @if (session('status') === 'profile-updated')
                 <p
