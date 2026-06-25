@@ -114,16 +114,15 @@
                                             class="bg-[#FFE8D6] text-orange-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wide">Upcoming</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">
-                                        {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y · h:i A') }}</p>
+                                        {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y') }} · {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
                                 </div>
                                 <div class="mt-3">
                                     <div class="flex justify-between text-[10px] font-semibold text-gray-500 mb-1.5">
                                         <span>Slots Capacity</span>
-                                        <span class="text-gray-900">{{ $event->maximum_slots }}</span>
+                                        <span class="text-gray-900">{{ $event->registrations_count ?? 0 }}/{{ $event->maximum_slots }}</span>
                                     </div>
                                     <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                        <div class="h-full bg-[#FF7A00] rounded-full" style="width: 50%;">
-                                            {{-- this should be dynamic later --}}
+                                        <div class="h-full bg-[#FF7A00] rounded-full" style="width: {{ $event->maximum_slots > 0 ? min(100, round((($event->registrations_count ?? 0) / $event->maximum_slots) * 100)) : 0 }}%;">
                                         </div>
                                     </div>
                                 </div>
@@ -132,7 +131,7 @@
                         <div class="border-t border-gray-50 p-2 flex gap-2 bg-gray-50/50">
                             <a href="{{ route('events.edit', $event) }}"
                                 class="flex-1 py-2 text-center text-xs font-semibold text-gray-600 hover:bg-white hover:shadow-sm rounded-xl transition-all block">Edit</a>
-                            <a href="{{-- {{ route('events.show', $event)  --}}}}"
+                            <a href="{{ route('admin.checkin', ['event_id' => $event->id]) }}"
                                 class="flex-1 py-2 text-center text-xs font-bold text-orange-700 bg-[#FFE8D6] hover:bg-orange-200 rounded-xl transition-all block">Attendees</a>
                         </div>
                     </div>

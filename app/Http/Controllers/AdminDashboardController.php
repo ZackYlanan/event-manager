@@ -20,7 +20,8 @@ class AdminDashboardController extends Controller
         $totalTickets = Registration::count();
 
         // gets the next 3 upcoming events for the quick-view list
-        $recentEvents = Event::where('event_date', '>=', now())
+        $recentEvents = Event::withCount('registrations')
+            ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
             ->take(3)
             ->get();
