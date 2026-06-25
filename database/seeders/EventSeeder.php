@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon; //for time 
@@ -15,36 +15,44 @@ class EventSeeder extends Seeder
     public function run(): void
     {
         //sample seeder
+        $admin1 = User::where('email', 'admin1@pup.edu.ph')->first();
+        $admin2 = User::where('email', 'admin2@pup.edu.ph')->first();
+
+        // 10 events for admin 1
+        for( $i = 1; $i <= 10; $i++ ) {
         DB::table('events')->insert([
-            [
-                'title' => 'Laravel Workshop',
-                'description' => 'Hands-on workshop on Laravel basics.',
-                'venue' => 'Room 101, IT Building',
-                'event_date' => Carbon::now()->addDays(7)->toDateString(),
+                'admin_id' => $admin1->id,
+                'category_id' => 1, 
+                'title' => "Admin1 Event $i",
+                'description' => "Description for Admin1 Event $i",
+                'venue' => "Venue $i",
+                'event_date' => Carbon::now()->addDays($i)->toDateString(),
                 'start_time' => '09:00:00',
                 'end_time' => '12:00:00',
-                'max_slots' => 50,
-                'registration_deadline' => Carbon::now()->addDays(5),
-                'status' => 'published',
-                'category_id' => 3,
+                'maximum_slots' => 50,
+                'registration_deadline' => Carbon::now()->addDays($i - 1)->toDateString(),
+                'status' => 'Published',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-            [
-                'title' => 'Data Science Seminar',
-                'description' => 'Introduction to machine learning and data analysis.',
-                'venue' => 'Auditorium',
-                'event_date' => Carbon::now()->addDays(14)->toDateString(),
+            ]);
+        }
+
+        for($i = 2; $i <= 10; $i++){
+            DB::table('events')->insert([
+            'admin_id' => $admin2->id,
+                'category_id' => 2,
+                'title' => "Admin2 Event $i",
+                'description' => "Description for Admin2 Event $i",
+                'venue' => "Venue $i",
+                'event_date' => Carbon::now()->addDays($i + 10)->toDateString(),
                 'start_time' => '13:00:00',
                 'end_time' => '16:00:00',
-                'max_slots' => 100,
-                'registration_deadline' => Carbon::now()->addDays(10),
-                'status' => 'published',
-                'category_id' =>4,
+                'maximum_slots' => 100,
+                'registration_deadline' => Carbon::now()->addDays($i + 9)->toDateString(),
+                'status' => 'Published',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-
         ]);
+        }
     }
 }
