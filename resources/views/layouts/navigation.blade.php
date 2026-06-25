@@ -22,6 +22,9 @@
             @endif
 
             @if (Auth::user()->role === 'student')
+                <a href="{{ route('student.home') }} "
+                    class="px-5 py-2 rounded-full transition-colors {{ request()->routeIs('student.home') ? 'bg-[#FFE8D6] text-orange-700' : 'hover:bg-gray-50' }}">
+                    Home</a>
                 <a href="{{ route('events.directory') }}"
                     class="px-5 py-2 rounded-full transition-colors {{ request()->routeIs('events.directory') ? 'bg-[#FFE8D6] text-orange-700' : 'hover:bg-gray-50' }}">Event
                     Directory</a>
