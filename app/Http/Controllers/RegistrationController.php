@@ -26,6 +26,11 @@ class RegistrationController extends Controller
             ->select('registrations.*') // keep only registration fields
             ->get();
 
+        // Sort: "Pending" (upcoming) tickets on top, completed/absent tickets below
+        $registrations = $registrations->sortByDesc(function ($registration) {
+            return $registration->attendance_status === 'Pending';
+        })->values();
+
         return view('student.tickets', compact('registrations'));
     }
 
@@ -93,6 +98,7 @@ class RegistrationController extends Controller
             ->get(); */
 
         $activeEvents = Event::whereBetween('event_date', [now(), now()->addDays(3)])
+            ->where('admin_id', Auth::id())
             ->where('status', 'Published')
             ->orderBy('event_date', 'asc')
             ->get();
@@ -101,7 +107,7 @@ class RegistrationController extends Controller
         $registrations = collect();
 
         if ($request->has('event_id')) {
-            $selectedEvent = Event::findOrFail($request->event_id);
+            $selectedEvent = Event::where('admin_id', Auth::id())->findOrFail($request->event_id);
 
             $registrations = Registration::with('user', 'event')
                 ->where('event_id', $selectedEvent->id)
@@ -144,6 +150,19 @@ class RegistrationController extends Controller
         $eventTitle = $registration->event->title;
 
         return redirect()->back()->with('success', "Successfully checked in {$studentName} for the event: \"{$eventTitle}\"!");
+    }
+
+    public function cancelTicket($id)
+    {
+        $registration = Registration::where('user_id', Auth::id())->findOrFail($id);
+
+        if ($registration->attendance_status !== 'Pending') {
+            return redirect()->back()->with('error', 'You can only cancel pending tickets.');
+        }
+
+        $registration->delete();
+
+        return redirect()->back()->with('success', 'Ticket successfully cancelled.');
     }
 
     public function manualCheckIn(Request $request, $id)

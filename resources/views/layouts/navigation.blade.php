@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-orange-50/60 sticky top-0 z-10 shadow-sm">
+<nav x-data="{ open: false }" class="bg-white border-b border-orange-50/60 sticky top-0 z-50 shadow-sm">
     <div class="px-4 md:px-8 py-4 flex items-center justify-between w-full">
         <!-- Logo -->
         <div class="flex items-center gap-2.5">
@@ -22,6 +22,9 @@
             @endif
 
             @if (Auth::user()->role === 'student')
+                <a href="{{ route('student.home') }} "
+                    class="px-5 py-2 rounded-full transition-colors {{ request()->routeIs('student.home') ? 'bg-[#FFE8D6] text-orange-700' : 'hover:bg-gray-50' }}">
+                    Home</a>
                 <a href="{{ route('events.directory') }}"
                     class="px-5 py-2 rounded-full transition-colors {{ request()->routeIs('events.directory') ? 'bg-[#FFE8D6] text-orange-700' : 'hover:bg-gray-50' }}">Event
                     Directory</a>

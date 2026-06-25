@@ -75,7 +75,7 @@ class EventController extends Controller
 
     public function edit($id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::where('admin_id', Auth::id())->findOrFail($id); // ensures that the admin can only view the edit form for an event they own
         $categories = EventCategory::all();
         $covers = Event::getAvailableCovers();
         return view('admin.events.edit', compact('event', 'categories', 'covers'));
@@ -97,7 +97,7 @@ class EventController extends Controller
             'status' => 'required|string|in:Draft,Published,Cancelled,Completed',
         ]);
 
-        $event = Event::findOrFail($id);
+        $event = Event::where('admin_id', Auth::id())->findOrFail($id); // re-verify ownership on submission before writing any changes to the database
         $event->update($validatedData);
 
         return redirect()->route('events.index')->with('success', 'Event updated successfully!');
@@ -105,7 +105,7 @@ class EventController extends Controller
 
     public function destroy($id) // delete function in event
     {
-        $event = Event::findOrFail($id);
+        $event = Event::where('admin_id', Auth::id())->findOrFail($id); // if the admin_id matches, grab the record and delete it.
 
         /* //restrict for admin only
         if (auth()->user()->role != 'admin') {
@@ -124,5 +124,24 @@ class EventController extends Controller
             ->findOrFail($id);
 
         return view('student.show', compact('event'));
+    }
+
+    public function studentHome(Request $request)
+    {
+        // get all events that is published and have not happened
+        $query = Event::withCount('registrations')
+            ->where('status', 'Published')
+            /*  ->where('event_date', '>=', now()) */
+            ->whereDate('event_date', '>=', today())
+            ->orderBy('event_date', 'asc');
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $events = $query->take(3)->get();
+        $categories = EventCategory::all();
+
+        return view('student.home', compact('events', 'categories'));
     }
 }

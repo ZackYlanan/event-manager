@@ -5,19 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventReportController extends Controller
 {
     public function showReport($id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::where('admin_id', Auth::id())->findOrFail($id); // ensures the admin can only view the report for an event they own
         return view('admin.report', compact('event'));
     }
 
     public function getReportData($id): JsonResponse
 
     {
-        $event = Event::with(['registrations.user', 'category'])->findOrFail($id);
+        $event = Event::with(['registrations.user', 'category'])->where('admin_id', Auth::id())->findOrFail($id);
 
         $totalRegistrations = $event->registrations->count();
         $maxCapacity = $event->maximum_slots;
@@ -61,7 +62,7 @@ class EventReportController extends Controller
 
     public function exportCsv($id)
     {
-        $event = Event::with('registrations.user')->findOrFail($id);
+        $event = Event::with('registrations.user')->where('admin_id', Auth::id())->findOrFail($id);
         $fileName = 'roster_event_' . $event->id . '_' . now()->format('Y-m-d') . '.csv';
 
         $headers = [

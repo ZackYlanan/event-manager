@@ -55,11 +55,12 @@ Route::middleware('auth')->group(function () {
 
     // --- STUDENT ROUTES: Registering for Events ---
     Route::middleware('role:student')->group(function () {
+        Route::get('/home', [EventController::class, 'studentHome'])->name('student.home');
         Route::get('/events', [EventController::class, 'publicDirectory'])->name('events.directory');
         Route::get('/my-tickets', [RegistrationController::class, 'myTickets'])->name('tickets.index');
         Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('events.register');
         Route::get('events/{id}/show', [EventController::class, 'show'])->name('events.show');
-        Route::delete('/tickets{id}/cancel', [EventController::class,'cancel'])->name('ticket.cancel');
+        Route::delete('/tickets/{id}/cancel', [RegistrationController::class, 'cancelTicket'])->name('tickets.cancel');
     });
 });
 

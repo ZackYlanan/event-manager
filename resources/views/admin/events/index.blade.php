@@ -77,9 +77,18 @@
                                         </td>
 
                                         <td class="px-6 py-3">
+                                            @php
+                                                $statusClasses = match($event->status) {
+                                                    'Draft' => 'bg-gray-100 text-gray-600',
+                                                    'Published' => 'bg-emerald-100 text-emerald-700',
+                                                    'Completed' => 'bg-blue-100 text-blue-700',
+                                                    'Cancelled' => 'bg-red-100 text-red-700',
+                                                    default => 'bg-gray-100 text-gray-600',
+                                                };
+                                            @endphp
                                             <span
-                                                class="bg-[#FFE8D6] text-orange-700 text-[10px] px-3 py-1 rounded-full font-bold">
-                                                {{ $event->status }} {{-- fix this as it still reflecting published --}}
+                                                class="{{ $statusClasses }} text-[10px] px-3 py-1 rounded-full font-bold">
+                                                {{ $event->status }}
                                             </span>
                                         </td>
 
