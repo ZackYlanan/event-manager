@@ -41,7 +41,9 @@
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                             </path>
                                         </svg>
-                                        {{ \Carbon\Carbon::parse($registration->event->event_date)->format('M d, Y') }} · {{ \Carbon\Carbon::parse($registration->event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($registration->event->end_time)->format('h:i A') }}
+                                        {{ \Carbon\Carbon::parse($registration->event->event_date)->format('M d, Y') }}
+                                        · {{ \Carbon\Carbon::parse($registration->event->start_time)->format('h:i A') }}
+                                        - {{ \Carbon\Carbon::parse($registration->event->end_time)->format('h:i A') }}
                                     </div>
                                     <div class="flex items-center text-sm font-medium text-gray-500">
                                         <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor"
@@ -56,10 +58,24 @@
                                     </div>
                                 </div>
 
-                                <a href=" {{ route('events.show', $registration->event->id) }} "
-                                    class="inline-flex items-center px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors">
-                                    View event
-                                </a>
+                                <div class="flex items-center gap-3">
+                                    <a href=" {{ route('events.show', $registration->event->id) }} "
+                                        class="inline-flex items-center px-5 py-2 border border-gray-200 rounded-full text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 transition-colors">
+                                        View event
+                                    </a>
+
+                                    @if ($registration->attendance_status === 'Pending')
+                                        <form action="{{ route('tickets.cancel', $registration->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to cancel this ticket?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="inline-flex items-center px-5 py-2 border border-red-200 rounded-full text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
 
                             <div
@@ -77,9 +93,17 @@
                                     {{ $registration->registration_code }}
                                 </span>
 
+                                @php
+                                    $statusClasses = match($registration->attendance_status) {
+                                        'Pending' => 'bg-amber-100 text-amber-700',
+                                        'Present' => 'bg-emerald-100 text-emerald-700',
+                                        'Absent' => 'bg-rose-100 text-rose-700',
+                                        default => 'bg-gray-100 text-gray-700',
+                                    };
+                                @endphp
                                 <span
-                                    class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase {{ $registration->attendance_status == 'Present' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-[#FF7A00]' }}">
-                                    {{ $registration->attendance_status }}
+                                    class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase {{ $statusClasses }}">
+                                    {{ $registration->display_status }}
                                 </span>
                             </div>
 
