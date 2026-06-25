@@ -11,6 +11,8 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
+        Registration::markAbsences(); // Automatically update missed events in the DB
+
         $totalEvents = Event::where('admin_id', auth()->id())->count(); // counts only the total events created by this specific admin
 
         $activeEvents = Event::where('admin_id', auth()->id())
