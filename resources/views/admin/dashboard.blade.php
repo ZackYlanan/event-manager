@@ -89,7 +89,7 @@
             </div>
 
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-lg font-bold text-gray-900">Next 3 Events</h2>
+                <h2 class="text-lg font-bold text-gray-900">Next {{ $recentEvents->count() }} {{ $recentEvents->count() === 1 ? 'Event' : 'Events' }}</h2>
                 <a href="{{ route('events.index') }}"
                     class="text-sm font-semibold text-orange-500 hover:text-orange-600 flex items-center gap-1">
                     See all <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
