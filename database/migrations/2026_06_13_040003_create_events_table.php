@@ -15,6 +15,7 @@ return new class extends Migration
             Schema::create('events', function (Blueprint $table) {
                 $table->id();
 
+                //If an admin is deleted from the system, automatically delete all the events they created to prevent orphan data.
                 $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
                 $table->foreignId('category_id')->constrained('event_categories')->onDelete('restrict');
 

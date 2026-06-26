@@ -9,27 +9,40 @@ use Illuminate\Support\Facades\Auth;
 
 class EventReportController extends Controller
 {
+    // Show the HTML report page for a specific event (only if owned by the logged-in admin)
     public function showReport($id)
     {
-        $event = Event::where('admin_id', Auth::id())->findOrFail($id); // ensures the admin can only view the report for an event they own
+        // Fetch the event or fail if it does not exist or does not belong to the admin
+        $event = Event::query()
+            ->where('admin_id', Auth::id())
+            ->findOrFail($id);
+
         return view('admin.report', compact('event'));
     }
 
+    // Fetch analytics and student roster data in JSON format for dynamic frontend graphs/tables
     public function getReportData($id): JsonResponse
-
     {
-        $event = Event::with(['registrations.user', 'category'])->where('admin_id', Auth::id())->findOrFail($id);
+        // Load category and registrations with their associated users
+        $event = Event::with(['registrations.user', 'category'])
+            ->where('admin_id', Auth::id())
+            ->findOrFail($id);
 
+        // Calculate analytics variables
         $totalRegistrations = $event->registrations->count();
         $maxCapacity = $event->maximum_slots;
 
-        $checkedIn = $event->registrations->where('attendance_status', 'Present')->count();
+        // Count how many students have checked in ('Present') and how many did not ('Absent' or 'Pending')
+        $checkedIn = $event->registrations
+            ->where('attendance_status', 'Present')
+            ->count();
         $noShows = $totalRegistrations - $checkedIn; //absents
 
-        /* $capacityUtilization = $maxCapacity > 0 ? round(($checkedIn / $maxCapacity) * 100, 2) : 0; */
+        // Calculate percentage calculations (avoiding division by zero)
         $capacityUtilization = $maxCapacity > 0 ? round(($totalRegistrations / $maxCapacity) * 100, 2) : 0;
         $turnoutRate = $totalRegistrations > 0 ? round(($checkedIn / $totalRegistrations) * 100, 2) : 0;
 
+        // Map registrations to a clean list of student details
         $roster = $event->registrations->map(function ($registration) {
             return [
                 'student_name' => $registration->user->name,
@@ -41,6 +54,7 @@ class EventReportController extends Controller
             ];
         });
 
+        // Return the gathered data as a JSON response
         return response()->json([
             'success' => 'true',
             'event' => [
@@ -60,11 +74,16 @@ class EventReportController extends Controller
         ], 200);
     }
 
+    // Export the event analytics and registration roster to a downloadable CSV file
     public function exportCsv($id)
     {
-        $event = Event::with('registrations.user')->where('admin_id', Auth::id())->findOrFail($id);
+        // Find the event and load all registration records
+        $event = Event::with('registrations.user')
+            ->where('admin_id', Auth::id())
+            ->findOrFail($id);
         $fileName = 'roster_event_' . $event->id . '_' . now()->format('Y-m-d') . '.csv';
 
+        // Set response headers for direct file download
         $headers = [
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
@@ -73,6 +92,7 @@ class EventReportController extends Controller
             "Expires" => 0
         ];
 
+        // Stream the CSV writing process directly into the response stream
         $callback = function () use ($event) {
             $file = fopen('php://output', 'w');
 
@@ -85,7 +105,7 @@ class EventReportController extends Controller
             $capacityUtilization = $maxCapacity > 0 ? round(($checkedIn / $maxCapacity) * 100, 2) : 0;
             $turnoutRate = $totalRegistrations > 0 ? round(($checkedIn / $totalRegistrations) * 100, 2) : 0;
 
-            // Add BOM for proper UTF-8 Excel parsing
+            // Add BOM (Byte Order Mark) for proper UTF-8 parsing inside Excel
             fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
             // Write Analytics Header
@@ -98,8 +118,10 @@ class EventReportController extends Controller
             fputcsv($file, ['Turnout Rate', $turnoutRate . '%']);
             fputcsv($file, []); // Empty row for spacing
 
+            // Write table header for student roster listing
             fputcsv($file, ['Student Name', 'Student ID', 'Course', 'Registration Code', 'Attendance Status', 'Checked In At']);
 
+            // Write registration details for each student
             foreach ($event->registrations as $reg) {
                 fputcsv($file, [
                     $reg->user->name,
@@ -112,6 +134,7 @@ class EventReportController extends Controller
             }
             fclose($file);
         };
+
         return response()->stream($callback, 200, $headers);
     }
 }

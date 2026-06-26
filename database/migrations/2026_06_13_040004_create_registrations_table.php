@@ -15,10 +15,12 @@ return new class extends Migration
             Schema::create('registrations', function (Blueprint $table) {
                 $table->id();
 
+                // If an event is deleted, wipe all of its registrations.
                 $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+                // If a student deletes their account or leaves the university, automatically release their tickets so those slots open up for others.
                 $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
-                $table->string('registration_code', 20)->unique();
+                $table->string('registration_code', 20)->unique(); //mvp ticket code
                 $table->enum('attendance_status', ['Pending', 'Present', 'Absent'])->default('Pending');
                 $table->timestamp('checked_in_at')->nullable();
                 $table->timestamps();

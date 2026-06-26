@@ -50,13 +50,13 @@
                         Return to Dashboard
                     </a>
                 @else
-                    <a href="{{ route('events.directory') }}"
+                    <a href="{{ route('student.home') }}"
                         class="inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-white transition-all bg-[#FF7A00] rounded-full hover:bg-orange-600 shadow-md hover:shadow-lg uppercase tracking-wider transform hover:-translate-y-0.5">
                         <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        Browse Events
+                        Return Home
                     </a>
                 @endif
             </div>

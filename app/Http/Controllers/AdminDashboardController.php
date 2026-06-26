@@ -6,29 +6,47 @@ use App\Models\Event;
 use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        Registration::markAbsences(); // Automatically update missed events in the DB
+        // Ensures attendance records stay accurate whenever the dashboard is accessed,
+        // preventing past attendees from remaining in a "Pending" state indefinitely.
+        Registration::markAbsences();
 
-        $totalEvents = Event::where('admin_id', auth()->id())->count(); // counts only the total events created by this specific admin
+        // Limits event statistics to the currently authenticated admin so each 
+        // administrator only sees data relevant to their own managed events.
+        $totalEvents = Event::query()
+            ->where('admin_id', Auth::id())
+            ->count();
 
-        $activeEvents = Event::where('admin_id', auth()->id())
+        // Only upcoming published events are considered active because draft, 
+        // cancelled, or completed events should not appear in active metrics.
+        $activeEvents = Event::query()->where('admin_id', Auth::id())
             ->where('status', 'Published')
             ->where('event_date', '>=', now())
-            ->count(); // counts only the active events created by this specific admin
+            ->count();
 
-        $totalStudents = User::where('role', 'student')->count(); // counts all the students in the system
+        // Provides administrators with visibility into the current student population 
+        // that can register for events.
+        $totalStudents = User::query()
+            ->where('role', 'student')
+            ->count();
 
-        $totalTickets = Registration::whereHas('event', function ($query) {
-            $query->where('admin_id', auth()->id());
-        })->count(); // counts all the tickets/registrations of this specific admin
+        // Measures overall participation across all events owned by the current admin 
+        // to support dashboard analytics and reporting.
+        $totalTickets = Registration::query()
+            ->whereHas('event', function ($query) {
+                $query->where('admin_id', Auth::id());
+            })
+            ->count();
 
-        // gets the next 4 upcoming events for the quick-view list (max of 4)
+        // Displays only (max of 4) upcoming events to keep the dashboard concise 
+        // and focused on the events that require immediate attention.
         $recentEvents = Event::withCount('registrations')
-            ->where('admin_id', auth()->id()) // gets only the events created by this specific admin
+            ->where('admin_id', Auth::id())
             ->where('status', 'Published')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')

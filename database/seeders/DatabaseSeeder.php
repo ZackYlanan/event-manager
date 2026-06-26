@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
             StudentsSeeder::class,
             CategorySeeder::class,
             EventSeeder::class,           
+            RegistrationSeeder::class,           
         ]);
     }
 }
