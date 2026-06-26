@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // Generates a BIGINT UNSIGNED primary key. This prevents future database
+            $table->id(); // Generates a BIGINT UNSIGNED primary key.
             $table->string('name');
             $table->string('email')->unique(); // we use unique constraint to guarantee no two accounts share an email login.
             $table->timestamp('email_verified_at')->nullable();
