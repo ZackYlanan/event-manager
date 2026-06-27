@@ -8,6 +8,7 @@ The system is built on **Laravel 13** with **Blade** templating, **Tailwind CSS*
 
 ## Table of Contents
 
+- [Details of the Members](#details-of-the-members)
 - [Implemented Features](#implemented-features)
 - [Tech Stack & Dependencies](#tech-stack--dependencies)
 - [Authentication & Authorization](#authentication--authorization)
@@ -18,6 +19,17 @@ The system is built on **Laravel 13** with **Blade** templating, **Tailwind CSS*
 - [Project Setup](#project-setup)
 - [Project Structure](#project-structure)
 - [Future Enhancements](#future-enhancements)
+
+---
+
+## Details of the Members
+
+| Name | Project Role | GitHub Profile |
+| :--- | :--- | :--- |
+| **Isaac Emmanuel F. Ylanan** | Project Lead & Backend Developer | [@ZackYlanan](https://github.com/ZackYlanan) |
+| **John Cyrill L. Mindanao** | Backend Developer | [@johncyrillmindanao](https://github.com/johncyrillmindanao) |
+| **Marvin Celzo Barrios** | UI/UX & Frontend Developer | [@vinbitz](https://github.com/vinbitz) |
+| **Aizel Baraquil Ridor** | UI/UX & Frontend Developer | [@aiz-21](https://github.com/aiz-21) |
 
 ---
 
